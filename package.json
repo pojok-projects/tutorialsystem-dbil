@@ -1,0 +1,28 @@
+{
+  "name": "tutorialsystem-dbil",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:JuniYadi/tutorialsystem-dbil.git",
+  "author": "Juni Yadi <juniyadi94@gmail.com>",
+  "license": "MIT",
+  "nodemonConfig": {
+    "env": {
+      "PORT": 4000
+    }
+  },
+  "scripts": {
+    "create-table": "node models/table.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.549.0",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.2.0",
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.3"
+  }
+}
