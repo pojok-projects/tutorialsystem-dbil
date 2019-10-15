@@ -21,12 +21,12 @@ const dynamoDB = new AWS.DynamoDB()
 const docClient = new AWS.DynamoDB.DocumentClient()
 
 module.exports = {
-    index: async (table, callback) => {
+    index: (table, callback) => {
         let params = {
             TableName: table
         }
 
-        await docClient.scan(params, (err, data) => {
+        docClient.scan(params, (err, data) => {
             if(err) {
                 return callback('no data found', null)
             } else {
@@ -34,13 +34,13 @@ module.exports = {
             }
         })
     },
-    add: async (table, data, callback) => {
+    add: (table, data, callback) => {
         let params = {
             TableName: table,
             Item: data
         }
 
-        await docClient.put(params, (err, data) => {
+        docClient.put(params, (err, data) => {
             if(err) {
                 return callback('error save a new data..!!', null)
             } else {
@@ -48,7 +48,7 @@ module.exports = {
             }
         })
     },
-    show: async (table, id, callback) => {
+    show: (table, id, callback) => {
         let params = {
             TableName: table,
             Key: {
@@ -56,7 +56,7 @@ module.exports = {
             }
         }
 
-        await docClient.get(params, (err, data) => {
+        docClient.get(params, (err, data) => {
             if(err) {
                 return callback('error get data..!!', null)
             } else {
