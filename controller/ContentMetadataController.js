@@ -23,7 +23,28 @@ const validate = (method) => {
 module.exports = {
     validate,
     index: async (req, res, next) => {
-        res.send(req.body)
+        await DynamoDB.index(model, (err, data) => {
+            if(err) {
+                throw new Error(err)
+            }
+
+            let resMess = ', no data found with this query'
+            let resData = []
+
+            if(data.Count > 0) {
+                resMess = ', data has been found'
+                resData = data.Items
+            }
+
+            res.send({
+                status: {
+                    code: 200,
+                    message: 'index list query has been performed' + resMess,
+                    total: data.Count
+                },
+                result: resData
+            })
+        })
     },
     store: async (req, res, next) => {
         

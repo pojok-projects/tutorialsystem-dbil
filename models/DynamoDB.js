@@ -21,6 +21,19 @@ const dynamoDB = new AWS.DynamoDB()
 const docClient = new AWS.DynamoDB.DocumentClient()
 
 module.exports = {
+    index: async (table, callback) => {
+        let params = {
+            TableName: table
+        }
+
+        await docClient.scan(params, (err, data) => {
+            if(err) {
+                return callback('no data found', null)
+            } else {
+                return callback(null, data)
+            }
+        })
+    },
     add: async (table, data, callback) => {
         let params = {
             TableName: table,
