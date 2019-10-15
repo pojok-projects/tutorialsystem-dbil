@@ -1,4 +1,4 @@
-const { DynamoDBController } = require('../controller')
+const DynamoDB = require('./DynamoDB.js')
 
 const newTable = [
     'ContentCategory',
@@ -9,5 +9,5 @@ const newTable = [
 ]
 
 newTable.forEach((items) => {
-    DynamoDBController.createTable(items)
+    DynamoDB.createTable(items)
 })

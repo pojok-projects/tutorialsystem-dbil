@@ -3,7 +3,7 @@ const { check, validationResult } = require('express-validator')
 
 // Set Table Connection
 const model = 'ContentMetadata'
-const DynamoDBController = require('./DynamoDBController')
+const DynamoDB = require('../models/DynamoDB.js')
 
 const validate = (method) => {
     switch(method) {
@@ -76,7 +76,7 @@ module.exports = {
         }
 
         // save data to database
-        await DynamoDBController.add(model, allData, (err, data) => {
+        await DynamoDB.add(model, allData, (err, data) => {
             if(err) {
                 throw new Error(err)
             }
@@ -97,7 +97,7 @@ module.exports = {
         const id = req.params.id
 
         // get data from database
-        await DynamoDBController.show(model, id, (err, data) => {
+        await DynamoDB.show(model, id, (err, data) => {
             if(err) {
                 throw new Error(err)
             }
