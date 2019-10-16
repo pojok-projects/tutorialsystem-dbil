@@ -9,12 +9,6 @@ if(process.env.DYNAMODB_TYPE == 'local') {
         region: 'us-west-2',
         endpoint: 'http://localhost:8000'
     })
-} else {
-    AWS.config.update({
-        accessKeyId: process.env.DYNAMODB_KEY,
-        secretAccessKey: process.env.DYNAMODB_SECRET,
-        region: process.env.DYNAMODB_REGION
-    })
 }
 
 const docClient = new AWS.DynamoDB.DocumentClient()
