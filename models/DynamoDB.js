@@ -70,20 +70,42 @@ module.exports = {
             })
         })
     },
-    update: (table, id, data, callback) => {
+    update: (table, id, data) => {
+
+        let expression = []
+        let expressionValue = {}
+        
+        for (var key in data) {
+          if (data.hasOwnProperty(key)) {
+            const item = data[key];
+            const replace = key.toString().replace('_', '')
+        
+            // set expression to array
+            const dataexpression = key + ' = :' + replace
+            expression.push(dataexpression)
+        
+            // set expression value to object
+            expressionValue[':' + replace] = item
+          }
+        }
+
         let params = {
             TableName: table,
             Key: {
                 id: id
-            }
+            },
+            UpdateExpression: "set " + expression.toString(), // set update expression to string
+            ExpressionAttributeValues: expressionValue
         }
 
-        docClient.update(params, (err, data) => {
-            if(err) {
-                return callback('error update data', null)
-            } else {
-                return callback(null, 'success')
-            }
+        return new Promise((resolve, reject) => {
+            docClient.update(params, (err, data) => {
+                if(err) {
+                    reject(new Errror(err))
+                }
+
+                resolve('success')
+            })
         })
     },
     delete: (table, id, callback) => {
