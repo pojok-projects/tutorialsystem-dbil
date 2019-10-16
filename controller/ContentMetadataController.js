@@ -135,7 +135,25 @@ module.exports = {
         })
     },
     update: (req, res, next) => {
-        //
+
+        const id = req.params.id
+
+        // update data from database
+        DynamoDB.update(model, id, req.body)
+        .then((data) => {
+            res.send({
+                status: {
+                    code: 200,
+                    message: 'data has been updated'
+                },
+                result : {
+                    id: id
+                }
+            })
+        })
+        .catch((err) => {
+            next(err)
+        })
     },
     delete: (req, res, next) => {
 
@@ -153,6 +171,6 @@ module.exports = {
         })
         .catch((err) => {
             next(err)
-        })     
+        })
     }
 }

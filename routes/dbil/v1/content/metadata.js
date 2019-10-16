@@ -10,5 +10,7 @@ metadata.post(
     ContentMetadataController.store
 )
 metadata.get('/:id', ContentMetadataController.show)
+metadata.post('/update/:id',ContentMetadataController.update)
+metadata.post('/delete/:id',ContentMetadataController.delete)
 
 module.exports = metadata
