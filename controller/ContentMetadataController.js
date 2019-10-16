@@ -1,6 +1,10 @@
 const uuid = require('uuid/v4')
 const { check, validationResult } = require('express-validator')
 
+// include helpers
+const helper = require('./HelperController')
+const _ = require('underscore')
+
 // Set Table Connection
 const model = 'ContentMetadata'
 const DynamoDB = require('../models/DynamoDB.js')
@@ -22,12 +26,9 @@ const validate = (method) => {
 
 module.exports = {
     validate,
-    index: async (req, res, next) => {
-        await DynamoDB.index(model, (err, data) => {
-            if(err) {
-                throw new Error(err)
-            }
-
+    index: (req, res, next) => {
+        DynamoDB.index(model)
+        .then((data) => {
             let resMess = ', no data found with this query'
             let resData = []
 
@@ -44,6 +45,9 @@ module.exports = {
                 },
                 result: resData
             })
+        })
+        .catch((err) => {
+            next(err)
         })
     },
     store: async (req, res, next) => {
@@ -97,11 +101,8 @@ module.exports = {
         }
 
         // save data to database
-        await DynamoDB.add(model, allData, (err, data) => {
-            if(err) {
-                throw new Error(err)
-            }
-
+        DynamoDB.add(model, allData)
+        .then((data) => {
             res.send({
                 status: {
                     code: 200,
@@ -112,18 +113,46 @@ module.exports = {
                 }
             })
         })
+        .catch((err) => {
+            next(err)
+        })
     },
-    show: async (req, res, next) => {
+    show: (req, res, next) => {
 
         const id = req.params.id
 
         // get data from database
-        await DynamoDB.show(model, id, (err, data) => {
-            if(err) {
-                throw new Error(err)
+        DynamoDB.show(model, id)
+        .then((data) => {
+            if(_.isEmpty(data)) {
+                throw new Error('data not found')
+            } else {
+                res.send(data.Item)
             }
-
-            res.send(data.Item)
         })
+        .catch((err) => {
+            next(err)
+        })
+    },
+    update: (req, res, next) => {
+        //
+    },
+    delete: (req, res, next) => {
+
+        const id = req.params.id
+
+        // delete data from database
+        DynamoDB.delete(model, id)
+        .then((data) => {
+            res.send({
+                status: {
+                    code: 200,
+                    message: 'data has been deleted'
+                }
+            })
+        })
+        .catch((err) => {
+            next(err)
+        })     
     }
 }

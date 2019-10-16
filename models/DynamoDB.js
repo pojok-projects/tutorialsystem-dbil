@@ -21,17 +21,19 @@ const dynamoDB = new AWS.DynamoDB()
 const docClient = new AWS.DynamoDB.DocumentClient()
 
 module.exports = {
-    index: (table, callback) => {
+    index: (table) => {
         let params = {
             TableName: table
         }
+        
+        return new Promise((resolve, reject) => {
+            docClient.scan(params, (err, data) => {
+                if(err) {
+                    reject(new Errror('no data found'))
+                }
 
-        docClient.scan(params, (err, data) => {
-            if(err) {
-                return callback('no data found', null)
-            } else {
-                return callback(null, data)
-            }
+                resolve(data)
+            })
         })
     },
     add: (table, data, callback) => {
@@ -40,15 +42,17 @@ module.exports = {
             Item: data
         }
 
-        docClient.put(params, (err, data) => {
-            if(err) {
-                return callback('error save a new data..!!', null)
-            } else {
-                return callback(null, 'success')
-            }
+        return new Promise((resolve, reject) => {
+            docClient.put(params, (err, data) => {
+                if(err) {
+                    reject(new Errror('error save a new data'))
+                }
+
+                resolve('success')
+            })
         })
     },
-    show: (table, id, callback) => {
+    show: (table, id) => {
         let params = {
             TableName: table,
             Key: {
@@ -56,12 +60,48 @@ module.exports = {
             }
         }
 
-        docClient.get(params, (err, data) => {
-            if(err) {
-                return callback('error get data..!!', null)
-            } else {
-                return callback(null, data)
+        return new Promise((resolve, reject) => {
+            docClient.get(params, (err, data) => {
+                if(err) {
+                    reject(new Errror(err))
+                }
+
+                resolve(data)
+            })
+        })
+    },
+    update: (table, id, data, callback) => {
+        let params = {
+            TableName: table,
+            Key: {
+                id: id
             }
+        }
+
+        docClient.update(params, (err, data) => {
+            if(err) {
+                return callback('error update data', null)
+            } else {
+                return callback(null, 'success')
+            }
+        })
+    },
+    delete: (table, id, callback) => {
+        let params = {
+            TableName: table,
+            Key: {
+                id: id
+            }
+        }
+
+        return new Promise((resolve, reject) => {
+            docClient.delete(params, (err, data) => {
+                if(err) {
+                    reject(new Errror('error delete data'))
+                }
+
+                resolve('success')
+            })
         })
     },
     createTable: (nameDB) => {
