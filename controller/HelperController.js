@@ -7,7 +7,6 @@ const response = (
     res.status(code).json({
         code: code,
         message: message,
-        path: req.originalUrl,
         method: req.method
     })
 }
