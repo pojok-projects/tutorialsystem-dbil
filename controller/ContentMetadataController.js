@@ -9,23 +9,21 @@ const _ = require('underscore')
 const model = 'ContentMetadata'
 const DynamoDB = require('../models/DynamoDB.js')
 
-const validate = (method) => {
-    switch(method) {
-        case 'store': {
-            return [
-                check('user_id', 'The fields user_id is required').exists(),
-                check('category_id', 'The fields category_id is required').exists(),
-                check('video_title', 'The fields video_title is required').exists(),
-                check('video_description', 'The fields video_description is required').exists(),
-                check('video_genre', 'The fields video_genre is required').exists(),
-                check('privacy', 'The fields privacy is required').exists(),
-            ]
-        }
-    }
-}
-
 module.exports = {
-    validate,
+    validate: (method) => {
+        switch(method) {
+            case 'store': {
+                return [
+                    check('user_id', 'The fields user_id is required').exists(),
+                    check('category_id', 'The fields category_id is required').exists(),
+                    check('video_title', 'The fields video_title is required').exists(),
+                    check('video_description', 'The fields video_description is required').exists(),
+                    check('video_genre', 'The fields video_genre is required').exists(),
+                    check('privacy', 'The fields privacy is required').exists(),
+                ]
+            }
+        }
+    },
     index: (req, res, next) => {
         DynamoDB.index(model)
         .then((data) => {
@@ -133,6 +131,9 @@ module.exports = {
         .catch((err) => {
             next(err)
         })
+    },
+    search: (req, res, next) => {
+        helper.response(req, res, 404, 'feature has been disabled')
     },
     update: (req, res, next) => {
 
