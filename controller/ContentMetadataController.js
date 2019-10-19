@@ -1,5 +1,7 @@
 const uuid = require('uuid/v4')
 const { check, validationResult } = require('express-validator')
+const dotenv = require('dotenv')
+dotenv.config()
 
 // include helpers
 const helper = require('./HelperController')
@@ -25,7 +27,23 @@ module.exports = {
         }
     },
     index: (req, res, next) => {
-        DynamoDB.index(model)
+        
+        let nextpage = req.query.nextpage
+        let limit = req.query.limit
+
+        if(!nextpage) {
+            nextpage = null
+        }
+
+        if(!limit) {
+            if(process.env.DYNAMODB_INDEX_LIMIT) {
+                limit = process.env.DYNAMODB_INDEX_LIMIT
+            } else {
+                limit = 25
+            }
+        }
+
+        DynamoDB.index(model, limit, nextpage)
         .then((data) => {
             let resMess = ', no data found with this query'
             let resData = []
@@ -39,7 +57,8 @@ module.exports = {
                 status: {
                     code: 200,
                     message: 'index list query has been performed' + resMess,
-                    total: data.Count
+                    total: data.Count,
+                    nextpage: data.LastEvaluatedKey ? data.LastEvaluatedKey.id : null
                 },
                 result: resData
             })
