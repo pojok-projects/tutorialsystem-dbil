@@ -10,6 +10,7 @@ metadata.post(
     ContentMetadataController.store
 )
 metadata.get('/:id', ContentMetadataController.show)
+metadata.post('/search', ContentMetadataController.search)
 metadata.post('/update/:id',ContentMetadataController.update)
 metadata.post('/delete/:id',ContentMetadataController.delete)
 
