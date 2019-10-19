@@ -41,6 +41,17 @@ module.exports = {
             } else {
                 limit = 25
             }
+        } else {
+            let maxlimit = 100
+
+            if(process.env.DYNAMODB_MAX_LIMIT) {
+                maxlimit = process.env.DYNAMODB_MAX_LIMIT
+            }
+
+            if(limit > maxlimit) {
+                let message = 'limit too big, max: '+ maxlimit
+                helper.response(req, res, 404, message)
+            }
         }
 
         DynamoDB.index(model, limit, nextpage)
