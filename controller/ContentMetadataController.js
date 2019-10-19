@@ -49,8 +49,10 @@ module.exports = {
             }
 
             if(limit > maxlimit) {
-                let message = 'limit too big, max: '+ maxlimit
-                helper.response(req, res, 404, message)
+                let err = {
+                    message: 'limit too big, max: '+ maxlimit
+                }
+                next(err)
             }
         }
 
@@ -163,7 +165,10 @@ module.exports = {
         })
     },
     search: (req, res, next) => {
-        helper.response(req, res, 404, 'feature has been disabled')
+        let err = {
+            message: 'feature has been disabled'
+        }
+        next(err)
     },
     update: (req, res, next) => {
 
