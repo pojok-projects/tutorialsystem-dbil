@@ -6,6 +6,14 @@ Database Interface Layer of Tutorialinaja by NodeJS
 * Set `DYNAMODB_TYPE` at `.env` to `local`
 * Setup Table by Command: `node models/table.js` or `yarn create-table`
 
+# ENV Details
+* `DYNAMODB_TYPE` set `local` for local dynamodb and `aws` for production. When set to local, this env not used: 
+  * `DYNAMODB_KEY`
+  * `DYNAMODB_SECRET`
+  * `DYNAMODB_REGION`
+* `DYNAMODB_INDEX_LIMIT` will limit output when return index data and set `nextpage` for pagination, if .env not set, default return index data is `25`
+* `DYNAMODB_MAX_LIMIT` will set max limit,  if query set more than what .env set, then it will return error, if .env not set, default max limit is `100`
+
 # Reference
 * [AWS Docs](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.html)
 * [GraphQL](https://github.com/serverless/examples/blob/master/aws-node-graphql-api-with-dynamodb/handler.js)
