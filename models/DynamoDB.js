@@ -21,9 +21,19 @@ const dynamoDB = new AWS.DynamoDB()
 const docClient = new AWS.DynamoDB.DocumentClient()
 
 module.exports = {
-    index: (table) => {
+    index: (table, limit, nextpage) => {
         let params = {
             TableName: table
+        }
+
+        if(limit) {
+            params.Limit = limit
+        }
+
+        if(nextpage) {
+            params.ExclusiveStartKey = {
+                id: nextpage
+            }
         }
         
         return new Promise((resolve, reject) => {
