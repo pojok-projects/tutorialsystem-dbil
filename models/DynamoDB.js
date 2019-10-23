@@ -39,7 +39,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             docClient.scan(params, (err, data) => {
                 if(err) {
-                    reject(new Errror('no data found'))
+                    reject('no data found')
                 }
 
                 resolve(data)
@@ -55,7 +55,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             docClient.put(params, (err, data) => {
                 if(err) {
-                    reject(new Errror('error save a new data'))
+                    reject('error save a new data')
                 }
 
                 resolve('success')
@@ -73,7 +73,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             docClient.get(params, (err, data) => {
                 if(err) {
-                    reject(new Errror(err))
+                    reject('oppss, something wrong')
                 }
 
                 resolve(data)
@@ -111,14 +111,14 @@ module.exports = {
         return new Promise((resolve, reject) => {
             docClient.update(params, (err, data) => {
                 if(err) {
-                    reject(new Errror(err))
+                    reject('error update data')
                 }
 
                 resolve('success')
             })
         })
     },
-    delete: (table, id, callback) => {
+    delete: (table, id) => {
         let params = {
             TableName: table,
             Key: {
@@ -129,7 +129,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             docClient.delete(params, (err, data) => {
                 if(err) {
-                    reject(new Errror('error delete data'))
+                    reject('error delete data')
                 }
 
                 resolve('success')
