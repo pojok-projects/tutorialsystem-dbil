@@ -47,7 +47,7 @@ module.exports = {
             })
         })
     },
-    add: (table, data, callback) => {
+    add: (table, data) => {
         
         // assign date to data
         data.created_at = dateNow
