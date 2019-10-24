@@ -43,6 +43,7 @@ const data = {
 }
 
 let expression = []
+let expressionName = {}
 let expressionValue = {}
 
 for (var key in data) {
@@ -50,16 +51,16 @@ for (var key in data) {
     const item = data[key];
     const replace = key.toString().replace('_', '')
 
-    const dataexpression = key + ' = :' + replace
+    const dataexpression = '#'+ replace + ' = :' + replace
     expression.push(dataexpression)
 
+    expressionName['#' + replace] = key
     expressionValue[':' + replace] = item
-
-    // console.log(':' + replace + ' - ' + item)
   }
 }
 
 // console.log(expression.toString())
+// console.log(expressionName)
 // console.log(expressionValue)
 
 
@@ -69,6 +70,7 @@ let params = {
         id: '4dbd0fbf-0603-47d4-a98e-c19925bb0f5a'
     },
     UpdateExpression: "set " + expression.toString(),
+    ExpressionAttributeNames: expressionName,
     ExpressionAttributeValues: expressionValue
 }
 
