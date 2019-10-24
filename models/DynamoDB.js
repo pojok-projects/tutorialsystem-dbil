@@ -61,7 +61,11 @@ module.exports = {
         return new Promise((resolve, reject) => {
             docClient.put(params, (err, data) => {
                 if(err) {
-                    reject('error save a new data')
+                    if(process.env.DEBUG) {
+                        reject(err)
+                    } else {
+                        reject('error save a new data')
+                    }
                 }
 
                 resolve('success')
@@ -79,7 +83,11 @@ module.exports = {
         return new Promise((resolve, reject) => {
             docClient.get(params, (err, data) => {
                 if(err) {
-                    reject('oppss, something wrong')
+                    if(process.env.DEBUG) {
+                        reject(err)
+                    } else {
+                        reject('oppss, something wrong')
+                    }
                 }
 
                 resolve(data)
@@ -126,7 +134,11 @@ module.exports = {
         return new Promise((resolve, reject) => {
             docClient.update(params, (err, data) => {
                 if(err) {
-                    reject('error update data')
+                    if(process.env.DEBUG) {
+                        reject(err)
+                    } else {
+                        reject('error update data')
+                    }
                 }
 
                 resolve('success')
@@ -144,7 +156,11 @@ module.exports = {
         return new Promise((resolve, reject) => {
             docClient.delete(params, (err, data) => {
                 if(err) {
-                    reject('error delete data')
+                    if(process.env.DEBUG) {
+                        reject(err)
+                    } else {
+                        reject('error delete data')
+                    }
                 }
 
                 resolve('success')
