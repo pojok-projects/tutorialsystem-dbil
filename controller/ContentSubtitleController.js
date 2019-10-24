@@ -6,7 +6,7 @@ const helper = require('./HelperController')
 const _ = require('underscore')
 
 // Set Table Connection
-const model = 'ContentSubtitle'
+const model = require('../models/ContentSubtitle')
 const DynamoDB = require('../models/DynamoDB.js')
 
 module.exports = {
@@ -49,7 +49,7 @@ module.exports = {
             }
         }
 
-        DynamoDB.index(model, limit, nextpage)
+        DynamoDB.index(model.table, limit, nextpage)
         .then((data) => {
             let resMess = ', no data found with this query'
             let resData = []
@@ -98,7 +98,7 @@ module.exports = {
         }
 
         // save data to database
-        DynamoDB.add(model, allData)
+        DynamoDB.add(model.table, allData)
         .then((data) => {
             res.send({
                 status: {
@@ -119,7 +119,7 @@ module.exports = {
         const id = req.params.id
 
         // get data from database
-        DynamoDB.show(model, id)
+        DynamoDB.show(model.table, id)
         .then((data) => {
             if(_.isEmpty(data)) {
                 throw new Error('data not found')
@@ -142,7 +142,7 @@ module.exports = {
         const id = req.params.id
 
         // update data from database
-        DynamoDB.update(model, id, req.body)
+        DynamoDB.update(model.table, id, req.body)
         .then((data) => {
             res.send({
                 status: {
@@ -163,7 +163,7 @@ module.exports = {
         const id = req.params.id
 
         // delete data from database
-        DynamoDB.delete(model, id)
+        DynamoDB.delete(model.table, id)
         .then((data) => {
             res.send({
 
