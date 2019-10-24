@@ -19,6 +19,7 @@ if(process.env.DYNAMODB_TYPE == 'local') {
 
 const dynamoDB = new AWS.DynamoDB()
 const docClient = new AWS.DynamoDB.DocumentClient()
+const dateNow = new Date().toISOString()
 
 module.exports = {
     index: (table, limit, nextpage) => {
@@ -47,6 +48,11 @@ module.exports = {
         })
     },
     add: (table, data, callback) => {
+        
+        // assign date to data
+        data.created_at = dateNow
+        data.updated_at = dateNow
+
         let params = {
             TableName: table,
             Item: data
@@ -82,7 +88,11 @@ module.exports = {
     },
     update: (table, id, data) => {
 
+        // assign date to data
+        data.updated_at = dateNow
+
         let expression = []
+        let expressionName = {}
         let expressionValue = {}
         
         for (var key in data) {
@@ -91,9 +101,13 @@ module.exports = {
             const replace = key.toString().replace('_', '')
         
             // set expression to array
-            const dataexpression = key + ' = :' + replace
+            // const dataexpression = key + ' = :' + replace
+            const dataexpression = '#'+ replace + ' = :' + replace
             expression.push(dataexpression)
         
+            // set expression name to object
+            expressionName['#' + replace] = key
+
             // set expression value to object
             expressionValue[':' + replace] = item
           }
@@ -105,6 +119,7 @@ module.exports = {
                 id: id
             },
             UpdateExpression: "set " + expression.toString(), // set update expression to string
+            ExpressionAttributeNames: expressionName,
             ExpressionAttributeValues: expressionValue
         }
 
