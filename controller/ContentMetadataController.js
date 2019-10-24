@@ -80,7 +80,7 @@ module.exports = {
             next(err)
         })
     },
-    store: async (req, res, next) => {
+    store: (req, res, next) => {
         
         // errors validate check
         let errors = validationResult(req);
