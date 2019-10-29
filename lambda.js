@@ -1,5 +1,5 @@
 const awsServerlessExpress = require('aws-serverless-express')
-const app = require('./')
+const app = require('./index')
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 
 app.use(awsServerlessExpressMiddleware.eventContext());
