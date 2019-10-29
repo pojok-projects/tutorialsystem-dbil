@@ -1,6 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const mainRouter = express()
+const mainRouter = express.Router()
 
 
 mainRouter.use(bodyParser.json())
@@ -24,23 +24,23 @@ mainRouter.get('/hello', (req, res) => {
 	})
 })
 
-// default error unknown route fallback
-mainRouter.all('/*',(req, res) => {
-    res.status(422).send({
-        code: 422,
-        path: req.originalUrl,
-        method: req.method,
-        message: "Invalid Request"
-    }) 
-})
+// // default error unknown route fallback
+// mainRouter.all('/*',(req, res) => {
+//     res.status(422).send({
+//         code: 422,
+//         path: req.originalUrl,
+//         method: req.method,
+//         message: "Invalid Request"
+//     }) 
+// })
 
-// Default Error Fallback
-mainRouter.use(( error , req, res, next) => {
-	return res.status(422).send({ status: {
-        code: 422,
-        message: error.message,
-        succeeded: false
-    }});
-});
+// // Default Error Fallback
+// mainRouter.use(( error , req, res, next) => {
+// 	return res.status(422).send({ status: {
+//         code: 422,
+//         message: error.message,
+//         succeeded: false
+//     }});
+// });
 
 module.exports = mainRouter
