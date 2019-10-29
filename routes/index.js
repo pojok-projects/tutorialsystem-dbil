@@ -17,7 +17,7 @@ dotenv.config()
 // cors
 const cors = require('cors')
 
-mainRouter.get('/hello', (req, res) => {
+mainRouter.get('/', (req, res) => {
 	res.send({
 		status: 200,
 		message: 'Hello, this is Backend for DBIL system'
