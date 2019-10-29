@@ -73,7 +73,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: !Sub '${pSolutionNaming}-lambda'
-      Description: Category Manager - Lambda
+      Description: DBIL JS - Lambda
       Runtime: nodejs10.x
       Role: !Sub ${rDBILLambdaExecutionRole.Arn}
       Code: ./
@@ -186,7 +186,7 @@ Resources:
     Type: AWS::ApiGateway::Deployment
     DependsOn:
       - rApiProxyAnyHandler
-    Description: Tutorial System Category Manager - Deployment of API Gateway endpoints
+    Description: Tutorial System DBIL JS - Deployment of API Gateway endpoints
     Properties:
       RestApiId: !Ref rApiGateway
       StageName: !Sub 'mstrStage'
