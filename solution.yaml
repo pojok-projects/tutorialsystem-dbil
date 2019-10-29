@@ -7,9 +7,12 @@ Transform: AWS::Serverless-2016-10-31
 Parameters:
   pSolutionNaming:
     Type: String
-  pEndpointApi:
+  pDynamoDBKey:
     Type: 'AWS::SSM::Parameter::Value<String>'
-    Default: ENDPOINT_API
+    Default: ACCESS_KEY
+  pDynamoDBSecret:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: SECRET_KEY
 
 Resources:
   rCommonPolicyForLambdas:
@@ -84,8 +87,9 @@ Resources:
         Mode: Active
       Environment:
         Variables:
-          ENDPOINTAPI_DBIL: !Sub ${pEndpointApi}
-          PORT: 3000
+          DYNAMODB_REGION: ap-southeast-1
+          DYNAMODB_KEY: !Sub ${pDynamoDBKey}
+          DYNAMODB_SECRET: !Sub ${pDynamoDBSecret}
 
   rApiGatewayRole:
     Type: AWS::IAM::Role
