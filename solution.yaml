@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 
-Description: 'Tutorial System - Category Manager Solution'
+Description: 'Tutorial System - Database Interface Layer'
 
 Transform: AWS::Serverless-2016-10-31
 
@@ -52,7 +52,7 @@ Resources:
               - s3:*
             Resource: '*'
 
-  rCategoryManagerLambdaExecutionRole:
+  rDBILLambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       Path: '/service/'
@@ -69,13 +69,13 @@ Resources:
       ManagedPolicyArns:
         - !Ref rCommonPolicyForLambdas
 
-  rCategoryManagerLambda:
+  rDBILLambda:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: !Sub '${pSolutionNaming}-lambda'
       Description: Category Manager - Lambda
       Runtime: nodejs10.x
-      Role: !Sub ${rCategoryManagerLambdaExecutionRole.Arn}
+      Role: !Sub ${rDBILLambdaExecutionRole.Arn}
       Code: ./
       Handler: lambda.handler
       MemorySize: 256
@@ -129,7 +129,7 @@ Resources:
     Type: AWS::ApiGateway::RestApi
     Properties:
       Name: !Sub '${pSolutionNaming}-api-gateway'
-      Description: Tutorial System Category Manager - API Rest Gateway
+      Description: Tutorial System for Database Interface Layer - API Rest Gateway
       FailOnWarnings: true
       EndpointConfiguration:
         Types:
@@ -139,7 +139,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:invokeFunction
-      FunctionName: !Sub ${rCategoryManagerLambda.Arn}
+      FunctionName: !Sub ${rDBILLambda.Arn}
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub
         - arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRef}/*
@@ -168,7 +168,7 @@ Resources:
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
-        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${rCategoryManagerLambda.Arn}/invocations'
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${rDBILLambda.Arn}/invocations'
       MethodResponses: []
 
   rApiGatewayResponseDefault4XX:

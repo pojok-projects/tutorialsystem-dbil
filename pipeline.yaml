@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Deployes a CICD pipeline for the Category Manager solution.
+Description: Deployes a CICD pipeline for Database Interface Layer.
 
 ### Prerequisite #####
 
@@ -368,8 +368,8 @@ Resources:
                 - set -ex
                 - printenv
                 - ls -R
-                - npm install -g yarn
-                - yarn install
+                - npm install -g npm
+                - npm install
                 - aws cloudformation package --template-file solution.yaml --s3-bucket $S3Bucket --output-template-file solution.yaml
           artifacts:
             files: "**/*"
