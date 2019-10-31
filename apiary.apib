@@ -1,0 +1,1157 @@
+FORMAT: 1A
+HOST: https://api.tutorialinaja.tech/dbil/v1/
+
+# Tutorialinaja - Database Interface Layer
+
+END POINT API Database to DynamoDB
+
+## API Host
+* HOST: https://api.tutorialinaja.tech
+
+## API Version
+* /v1
+
+## API Main End Point
+* https://api.tutorialinaja.tech/dbil/v1/
+
+## Search Query Builder
+* Before make request query, make sure, close by double quote tags and separate with comma if using multiple query
+* Use RAW Encode for send a POST Request
+  * RAW: 
+    * Single Query : `query="video_title=Pojok Programers"`
+    * Multiple Query : `query="video_title=Pojok Programers,video_genre=Tutorial"`
+  * RAW + Encode:
+    * Single Query : `query=%22video_title%3DPojok+Programers%22`
+    * Multiple Query : `%22video_title%3DPojok+Programers%2Cvideo_genre%3DTutorial%22`
+
+| Parameter     | value              |
+| ------------- | ------------------ |
+| `video_title` | `Pojok Programers` |
+| `video_genre` | `Tutorial`         |
+
+
+## Content Metadata [/content/metadata]
+Represents Metadata of Videos. 
+
+---
+**Table Routes:**
+| URL                                      | Method | INFO                    |
+| ---------------------------------------- | ------ | ----------------------- |
+| `content/metadata`                       | GET    | Get All Data            |
+| `content/metadata/store`                 | POST   | Save Data               |
+| `content/metadata/{id}`                  | GET    | Get Data by ID          |
+| `content/metadata/search`                | POST   | Search Data Query       |
+| `content/metadata/update/{id}`           | POST   | Update Data by ID       |
+| `content/metadata/delete/{id}`           | POST   | Delete Data by ID       |
+
+---
+**Requests Tables Parameters:**
+| Parameter           | type   | Status   | Description                       |
+| ------------------- | ------ | -------- | --------------------------------- |
+| `user_id`           | string | required | Id of User                        |
+| `category_id`       | string | required | ID From Content Category          |
+| `video_title`       | string | required | Title of Video                    |
+| `video_description` | string | required | Description of Video              |
+| `video_genre`       | string | required | Genre of Video                    |
+| `video_viewers`     | int    | optional | Viewers of Video                  |
+| `video_share`       | int    | optional | Share of Video                    |
+| `video_saves`       | int    | optional | Saves of Video                    |
+| `video_downloads`   | int    | optional | Downloads of Video                |
+| `privacy`           | string | required | Privacy of Video (public/private) |
+| `thumbnail`         | json   | optional | Json Object of `thumbnail`        |
+| `metavideos`        | json   | optional | Json Object of `metavideos`       |
+| `subtitle`          | json   | optional | Json Object of `subtitle`         |
+| `comments`          | json   | optional | Json Object of `comments`         |
+| `likes`             | json   | optional | Json Object of `likes`            |
+| `dislikes`          | json   | optional | Json Object of `dislikes`         |
+
+
+---
+**Thumbnail Table Parameters:**
+| Parameter    | type   | Status   | Description                                            |
+| ------------ | ------ | -------- | ------------------------------------------------------ |
+| `id`         | string | required | UUIDv4 ID                                              |
+| `path`       | string | required | Url Path of Thumbnail                                  |
+| `default`    | bool   | required | if set `true` then this thumbnail will use for default |
+| `created_at` | date   | required | Date of Data Creation                                  |
+| `updated_at` | date   | required | Date of Data Updating                                  |
+
+---
+**Metavideos Table Parameters:**
+| Parameter    | type   | Status   | Description           |
+| ------------ | ------ | -------- | --------------------- |
+| `id`         | string | required | UUIDv4 ID             |
+| `file_name`  | string | required | File Name of Video    |
+| `file_path`  | string | required | File Path of Video    |
+| `format`     | string | required | Format of Video       |
+| `resolution` | string | required | Resolution of Video   |
+| `size`       | int    | required | Size of Video  [using bytes](https://convertlive.com/u/convert/megabytes/to/bytes#100) |
+| `duration`   | int    | required | Duration of Video [using seconds](https://convertlive.com/c/convert/time) |
+| `created_at` | date   | required | Date of Data Creation |
+| `updated_at` | date   | required | Date of Data Updating |
+
+**Subtitle Table Parameters:**
+| Parameter              | type   | Status   | Description              |
+| ---------------------- | ------ | -------- | ------------------------ |
+| `id`                   | string | required | UUIDv4 ID                |
+| `subtitle_category_id` | string | required | Id From Content Subtitle |
+| `file_path`            | string | required | File Path of Subtitle    |
+| `created_at`           | date   | required | Date of Data Creation    |
+| `updated_at`           | date   | required | Date of Data Updating    |
+
+**Comment Table Parameters:**
+| Parameter    | type   | Status   | Description                                    |
+| ------------ | ------ | -------- | ---------------------------------------------- |
+| `id`         | string | required | UUIDv4 ID                                      |
+| `user_id`    | string | required | User ID                                        |
+| `reply_id`   | string | optional | ID From Comment, if they reply another comment |
+| `message`    | string | required | Reply Message                                  |
+| `created_at` | date   | required | Date of Data Creation                          |
+| `updated_at` | date   | required | Date of Data Updating                          |
+
+**Likes Table Parameters:**
+| Parameter    | type   | Status   | Description           |
+| ------------ | ------ | -------- | --------------------- |
+| `id`         | string | required | UUIDv4 ID             |
+| `user_id`    | string | required | User ID               |
+| `created_at` | date   | required | Date of Data Creation |
+| `updated_at` | date   | required | Date of Data Updating |
+
+**Dislikes Table Parameters:**
+| Parameter    | type   | Status   | Description           |
+| ------------ | ------ | -------- | --------------------- |
+| `id`         | string | required | UUIDv4 ID             |
+| `user_id`    | string | required | User ID               |
+| `created_at` | date   | required | Date of Data Creation |
+| `updated_at` | date   | required | Date of Data Updating |
+
+### Get All Data [GET /content/metadata]
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "index list query has been performed, data has been found",
+                "total": 1
+            },
+            "result": [
+                {
+                    "metavideos": [
+                        {
+                            "duration": 30,
+                            "file_path": "/videos/1080p/tutorial-node-js-bagian-1.mp4",
+                            "size": 104857600,
+                            "updated_at": "2019-08-24T22:28:16+07:00",
+                            "file_name": "tutorial-node-js-bagian-1.mp4",
+                            "format": "mp4",
+                            "created_at": "2019-08-24T22:28:16+07:00",
+                            "id": "cb92f773-c0a9-41dc-8cc9-9be9d680097c",
+                            "resolution": "1080p"
+                        }
+                    ],
+                    "comments": null,
+                    "privacy": "public",
+                    "created_at": "2019-08-24T22:34:32+07:00",
+                    "video_share": null,
+                    "dislikes": null,
+                    "video_downloads": null,
+                    "video_description": "Tutorial Dasar NodeJs",
+                    "category_id": "2f0a68a1-115d-4c24-9173-404638a1fc27",
+                    "video_title": "Tutorial NodeJs - Bagian 1",
+                    "updated_at": "2019-08-24T22:34:32+07:00",
+                    "user_id": "91fa1120-17d4-442b-8338-aa3ab7bbc14e",
+                    "subtitle": null,
+                    "video_genre": "Tutorial",
+                    "id": "56b140a1-16a7-4fbb-b852-7365fbff7112",
+                    "video_saves": null,
+                    "video_viewers": null,
+                    "likes": null
+                }
+            ]
+        }
+
+### Save Data [POST /content/metadata/store]
+
++ Request (application/json)
+
+        {
+            "user_id": "91fa1120-17d4-442b-8338-aa3ab7bbc14e",
+            "category_id": "2f0a68a1-115d-4c24-9173-404638a1fc27",
+            "video_title": "Tutorial NodeJs - Bagian 1",
+            "video_description": "Tutorial Dasar NodeJs",
+            "video_genre": "Tutorial",
+            "privacy": "public",
+            "metavideos": [
+                    {
+                    "id": "cb92f773-c0a9-41dc-8cc9-9be9d680097c",
+                    "file_name": "tutorial-node-js-bagian-1.mp4",
+                    "file_path": "/videos/1080p/tutorial-node-js-bagian-1.mp4",
+                    "size": 104857600,
+                    "format": "mp4",
+                    "resolution": "1080p",
+                    "duration": 30,
+                    "created_at": "2019-08-24T22:28:16+07:00",
+                    "updated_at": "2019-08-24T22:28:16+07:00"
+                    }
+                ]
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been saved"
+            },
+            "result": {
+                "id": "56b140a1-16a7-4fbb-b852-7365fbff7112"
+            }
+        }
+        
+### Get Data by ID [GET /content/metadata/{id}]
+
++ Parameter
+    + id: `56b140a1-16a7-4fbb-b852-7365fbff7112` (string, required) - Id of Content Metadata
+
++ Response 200 (application/json)
+
+        {
+            "metavideos": [
+                {
+                    "duration": 30,
+                    "file_path": "/videos/1080p/tutorial-node-js-bagian-1.mp4",
+                    "size": 104857600,
+                    "updated_at": "2019-08-24T22:28:16+07:00",
+                    "file_name": "tutorial-node-js-bagian-1.mp4",
+                    "format": "mp4",
+                    "created_at": "2019-08-24T22:28:16+07:00",
+                    "id": "cb92f773-c0a9-41dc-8cc9-9be9d680097c",
+                    "resolution": "1080p"
+                }
+            ],
+            "comments": null,
+            "privacy": "public",
+            "created_at": "2019-08-24T22:34:32+07:00",
+            "video_share": null,
+            "dislikes": null,
+            "video_downloads": null,
+            "video_description": "Tutorial Dasar NodeJs",
+            "category_id": "2f0a68a1-115d-4c24-9173-404638a1fc27",
+            "video_title": "Tutorial NodeJs - Bagian 1",
+            "updated_at": "2019-08-24T22:34:32+07:00",
+            "user_id": "91fa1120-17d4-442b-8338-aa3ab7bbc14e",
+            "subtitle": null,
+            "video_genre": "Tutorial",
+            "id": "56b140a1-16a7-4fbb-b852-7365fbff7112",
+            "video_saves": null,
+            "video_viewers": null,
+            "likes": null
+        }
+
+### Search Data Query [POST /content/metadata/search]
+
+**Requests Tables:**
+| Parameter | type   | Description                                |
+| --------- | ------ | ------------------------------------------ |
+| `query`   | string | Based on Table Name and Using `URL Encode` |
+
+**Important:**
+* Use `Search Query Builder`
+
++ Request (application/json)
+
+        {
+            "query": "%22video_title%3DTutorial+NodeJs%2Cvideo_description%3DTutorial%22"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "search query has been performed, data has been found",
+                "total": 1
+            },
+            "result": [
+                {
+                    "metavideos": [
+                        {
+                            "duration": 30,
+                            "file_path": "/videos/1080p/tutorial-node-js-bagian-1.mp4",
+                            "size": 104857600,
+                            "updated_at": "2019-08-24T22:28:16+07:00",
+                            "file_name": "tutorial-node-js-bagian-1.mp4",
+                            "format": "mp4",
+                            "created_at": "2019-08-24T22:28:16+07:00",
+                            "id": "cb92f773-c0a9-41dc-8cc9-9be9d680097c",
+                            "resolution": "1080p"
+                        }
+                    ],
+                    "comments": null,
+                    "privacy": "public",
+                    "created_at": "2019-08-24T22:34:32+07:00",
+                    "video_share": null,
+                    "dislikes": null,
+                    "video_downloads": null,
+                    "video_description": "Tutorial Dasar NodeJs",
+                    "category_id": "2f0a68a1-115d-4c24-9173-404638a1fc27",
+                    "video_title": "Tutorial NodeJs - Bagian 1",
+                    "updated_at": "2019-08-24T22:34:32+07:00",
+                    "user_id": "91fa1120-17d4-442b-8338-aa3ab7bbc14e",
+                    "subtitle": null,
+                    "video_genre": "Tutorial",
+                    "id": "56b140a1-16a7-4fbb-b852-7365fbff7112",
+                    "video_saves": null,
+                    "video_viewers": null,
+                    "likes": null
+                }
+            ]
+        }
+        
+### Update Data by ID [POST /content/metadata/update/{id}]
+
++ Parameter
+    + id: `56b140a1-16a7-4fbb-b852-7365fbff7112` (string, required) - Id of Content Metadata
+
++ Request (application/json)
+
+        {
+            "metavideos": [
+                {
+                    "id": "cb92f773-c0a9-41dc-8cc9-9be9d680097c",
+                    "file_name": "tutorial-node-js-bagian-1.mp4",
+                    "file_path": "/videos/1080p/tutorial-node-js-bagian-1.mp4",
+                    "size": 104857600,
+                    "format": "mp4",
+                    "resolution": "1080p",
+                    "duration": 30,
+                    "created_at": "2019-08-24T22:28:16+07:00",
+                    "updated_at": "2019-08-24T22:28:16+07:00"
+                },
+                {
+                    "id": "2dc71150-27dd-4673-8ede-8cdab4f9a1a6",
+                    "file_name": "tutorial-node-js-bagian-2.mp4",
+                    "file_path": "/videos/1080p/tutorial-node-js-bagian-2.mp4",
+                    "size": 104857600,
+                    "format": "mp4",
+                    "resolution": "1080p",
+                    "duration": 30,
+                    "created_at": "2019-08-24T22:28:16+07:00",
+                    "updated_at": "2019-08-24T22:28:16+07:00"
+                },
+                {
+                    "id": "daeaf65b-cb80-409f-bdb9-fbab5eb3246a",
+                    "file_name": "tutorial-node-js-bagian-3.mp4",
+                    "file_path": "/videos/1080p/tutorial-node-js-bagian-3.mp4",
+                    "size": 104857600,
+                    "format": "mp4",
+                    "resolution": "1080p",
+                    "duration": 30,
+                    "created_at": "2019-08-24T22:28:16+07:00",
+                    "updated_at": "2019-08-24T22:28:16+07:00"
+                }
+            ]    
+        }
+
+
++ Response 200 (application/json)
+
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been updated"
+            },
+            "result": {
+                "id": "56b140a1-16a7-4fbb-b852-7365fbff7112"
+            }
+        }
+        
+### Delete Data by ID [POST /content/metadata/delete/{id}]
+
++ Parameter
+    + id: `56b140a1-16a7-4fbb-b852-7365fbff7112` (string, required) - Id of Content Metadata
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been deleted"
+            },
+            "result": {
+                "id": "56b140a1-16a7-4fbb-b852-7365fbff7112"
+            }
+        }
+
+## Content Subtitle [/content/subtitle]
+Represents Subtitle Category of Videos. 
+
+---
+**Requests Tables:**
+| Parameter     | type   | Status   | Description                     |
+| ------------- | ------ | -------- | ------------------------------- |
+| `name`        | string | required | name of content subtitle        |
+| `description` | string | required | description of content subtitle |
+
+---
+**Table Routes:**
+| URL                                      | Method | INFO                    |
+| ---------------------------------------- | ------ | ----------------------- |
+| `content/subtitle`                       | GET    | Get All Data            |
+| `content/subtitle/store`                 | POST   | Save Data               |
+| `content/subtitle/{id}`                  | GET    | Get Data by ID          |
+| `content/subtitle/search`                | POST   | Search Data Query       |
+| `content/subtitle/update/{id}`           | POST   | Update Data by ID       |
+| `content/subtitle/delete/{id}`           | POST   | Delete Data by ID       |
+
+
+### Get All Data [GET /content/subtitle]
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "index list query has been performed, data has been found",
+                "total": 1
+            },
+            "result": [
+                {
+                    "updated_at": "2019-08-22T10:03:02+07:00",
+                    "created_at": "2019-08-22T10:03:02+07:00",
+                    "description": "Subtitle Indonesia",
+                    "id": "22a51a17-6cad-491f-a5fb-85826357721f",
+                    "name": "Indonesia"
+                }
+            ]
+        }
+
+### Save Data [POST /content/subtitle/store]
+
++ Request (application/json)
+
+        {
+            "name": "Indonesia",
+            "description": "Subtitle Indonesia"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been saved"
+            },
+            "result": {
+                "id": "22a51a17-6cad-491f-a5fb-85826357721f"
+            }
+        }
+        
+### Get Data by ID [GET /content/subtitle/{id}]
+
++ Parameter
+    + id: `22a51a17-6cad-491f-a5fb-85826357721f` (string, required) - Id of Content Subtitle
+
++ Response 200 (application/json)
+
+        {
+            "updated_at": "2019-08-22T10:03:02+07:00",
+            "created_at": "2019-08-22T10:03:02+07:00",
+            "description": "Subtitle Indonesia",
+            "id": "22a51a17-6cad-491f-a5fb-85826357721f",
+            "name": "Indonesia"
+        }
+
+### Search Data Query [POST /content/subtitle/search]
+
+**Requests Tables:**
+| Parameter | type   | Status   | Description              |
+| --------- | ------ | -------- | ------------------------ |
+| `name`    | string | required | name of content subtitle |
+
++ Request (application/json)
+
+        {
+            "name": "Indonesia"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "search query has been performed, data has been found",
+                "total": 1
+            },
+            "result": [
+                {
+                    "updated_at": "2019-08-22T10:03:02+07:00",
+                    "created_at": "2019-08-22T10:03:02+07:00",
+                    "description": "Subtitle Indonesia",
+                    "id": "22a51a17-6cad-491f-a5fb-85826357721f",
+                    "name": "Indonesia"
+                }
+            ]
+        }
+        
+### Update Data by ID [POST /content/subtitle/update/{id}]
+
++ Parameter
+    + id: `22a51a17-6cad-491f-a5fb-85826357721f` (string, required) - Id of Content Subtitle
+
++ Request (application/json)
+
+        {
+            "description": "List all subtitle indonesia"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been updated"
+            },
+            "result": {
+                "id": "22a51a17-6cad-491f-a5fb-85826357721f"
+            }
+        }
+        
+### Delete Data by ID [POST /content/metadata/delete/{id}]
+
++ Parameter
+    + id: `22a51a17-6cad-491f-a5fb-85826357721f` (string, required) - Id of Content Metadata
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been deleted"
+            },
+            "result": {
+                "id": "22a51a17-6cad-491f-a5fb-85826357721f"
+            }
+        }
+
+## Content Category [/content/category]
+Represents Category Videos. 
+
+---
+**Requests Tables:**
+| Parameter     | type   | Status   | Description                     |
+| ------------- | ------ | -------- | ------------------------------- |
+| `name`        | string | required | name of content category        |
+| `description` | string | required | description of content category |
+
+---
+**Table Routes:**
+| URL                                      | Method | INFO                    |
+| ---------------------------------------- | ------ | ----------------------- |
+| `content/category`                       | GET    | Get All Data            |
+| `content/category/store`                 | POST   | Save Data               |
+| `content/category/{id}`                  | GET    | Get Data by ID          |
+| `content/category/search`                | POST   | Search Data Query       |
+| `content/category/update/{id}`           | POST   | Update Data by ID       |
+| `content/category/delete/{id}`           | POST   | Delete Data by ID       |
+
+### Get All Data [GET /content/category]
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "index list query has been performed, data has been found",
+                "total": 1
+            },
+            "result": [
+                {
+                    "updated_at": "2019-08-21T10:32:53+07:00",
+                    "created_at": "2019-08-21T10:32:53+07:00",
+                    "description": "Movie Action",
+                    "id": "2f0a68a1-115d-4c24-9173-404638a1fc27",
+                    "name": "Action"
+                }
+            ]
+        }
+
+### Save Data [POST /content/category/store]
+
++ Request (application/json)
+
+        {
+           "name": "Action",
+           "description": "Movie Action"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been saved"
+            },
+            "result": {
+                "id": "2f0a68a1-115d-4c24-9173-404638a1fc27"
+            }
+        }
+        
+### Get Data by ID [GET /content/category/{id}]
+
++ Parameter
+    + id: `2f0a68a1-115d-4c24-9173-404638a1fc27` (string, required) - Id of Content Category
+
++ Response 200 (application/json)
+
+        {
+            "updated_at": "2019-08-21T10:32:53+07:00",
+            "created_at": "2019-08-21T10:32:53+07:00",
+            "description": "Movie Action",
+            "id": "2f0a68a1-115d-4c24-9173-404638a1fc27",
+            "name": "Action"
+        }
+
+### Search Data Query [POST /content/category/search]
+
+**Requests Tables:**
+| Parameter | type   | Status   | Description              |
+| --------- | ------ | -------- | ------------------------ |
+| `name`    | string | required | name of content category |
+
++ Request (application/json)
+
+        {
+            "name": "Action"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "search query has been performed, data has been found",
+                "total": 1
+            },
+            "result": [
+                {
+                    "updated_at": "2019-08-21T10:32:53+07:00",
+                    "created_at": "2019-08-21T10:32:53+07:00",
+                    "description": "Movie Action",
+                    "id": "2f0a68a1-115d-4c24-9173-404638a1fc27",
+                    "name": "Action"
+                }
+            ]
+        }
+        
+### Update Data by ID [POST /content/category/update/{id}]
+
++ Parameter
+    + id: `2f0a68a1-115d-4c24-9173-404638a1fc27` (string, required) - Id of Content Category
+
++ Request (application/json)
+
+        {
+           "name": "Action 2",
+           "description": "Movie Action 2"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been updated"
+            },
+            "result": {
+                "id": "2f0a68a1-115d-4c24-9173-404638a1fc27"
+            }
+        }
+        
+### Delete Data by ID [POST /content/category/delete/{id}]
+
++ Parameter
+    + id: `2f0a68a1-115d-4c24-9173-404638a1fc27` (string, required) - Id of Content Category
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been deleted"
+            },
+            "result": {
+                "id": "2f0a68a1-115d-4c24-9173-404638a1fc27"
+            }
+        }
+
+## Content Playlists Category [/content/playlists/category]
+Represents Like of Videos. 
+
+---
+**Requests Tables:**
+| Parameter     | type   | Status   | Description                               |
+| ------------- | ------ | -------- | ----------------------------------------- |
+| `user_id`     | string | required | User ID                                   |
+| `title`       | string | required | title of content playlists category       |
+| `description` | string | required | description of content playlists category |
+| `status`      | string | required | `publik|user|pribadi`                     |
+---
+**Table Routes:**
+| URL                                      | Method | INFO                    |
+| ---------------------------------------- | ------ | ----------------------- |
+| `content/playlists/category`             | GET    | Get All Data            |
+| `content/playlists/category/store`       | POST   | Save Data               |
+| `content/playlists/category/{id}`        | GET    | Get Data by ID          |
+| `content/playlists/category/search`      | POST   | Search Data Query       |
+| `content/playlists/category/update/{id}` | POST   | Update Data by ID       |
+| `content/playlists/category/delete/{id}` | POST   | Delete Data by ID       |
+
+### Get All Data [GET /content/playlists/category]
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "index list query has been performed, data has been found",
+                "total": 1
+            },
+            "result": [
+                {
+                    "updated_at": "2019-07-16T17:26:37+07:00",
+                    "user_id": 123,
+                    "description": "Step By Step Membuat Node JS",
+                    "created_at": "2019-07-16T17:26:37+07:00",
+                    "id": "a02d33c3-e82e-4df7-be1f-c01a943ad55e",
+                    "title": "Tutorial Node JS Untuk Pemula",
+                    "status": "publik"
+                }
+            ]
+        }
+
+
+### Save Data [POST /content/playlists/category/store]
+
++ Request (application/json)
+
+        {
+            "user_id": 123,
+            "title": "Tutorial Node JS Untuk Pemula",
+            "description": "Step By Step Membuat Node JS",
+            "status": "publik"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been saved"
+            },
+            "result": {
+                "id": "a02d33c3-e82e-4df7-be1f-c01a943ad55e"
+            }
+        }
+        
+### Get Data by ID [GET /content/playlists/category/{id}]
+
++ Parameter
+    + id: `a02d33c3-e82e-4df7-be1f-c01a943ad55e` (string, required) - Id of Content Playlist Category
+
++ Response 200 (application/json)
+
+        {
+            "updated_at": "2019-07-16T17:26:37+07:00",
+            "user_id": 123,
+            "description": "Step By Step Membuat Node JS",
+            "created_at": "2019-07-16T17:26:37+07:00",
+            "id": "a02d33c3-e82e-4df7-be1f-c01a943ad55e",
+            "title": "Tutorial Node JS Untuk Pemula",
+            "status": "publik"
+        }
+
+### Search Data Query [POST /content/playlists/category/search]
+
+**Requests:**
+| Parameter | type   | Description                         |
+| --------- | ------ | ----------------------------------- |
+| `title`   | string | title of content playlists category |
+
++ Request (application/json)
+
+        {
+            "title": "Tutorial Node JS Untuk Pemula"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "search query has been performed, data has been found",
+                "total": 1
+            },
+            "result": [
+                {
+                    "updated_at": "2019-07-16T17:26:37+07:00",
+                    "user_id": 123,
+                    "description": "Step By Step Membuat Node JS",
+                    "created_at": "2019-07-16T17:26:37+07:00",
+                    "id": "a02d33c3-e82e-4df7-be1f-c01a943ad55e",
+                    "title": "Tutorial Node JS Untuk Pemula",
+                    "status": "publik"
+                }
+            ]
+        }
+        
+### Update Data by ID [POST /content/playlists/category/update/{id}]
+
++ Parameter
+    + id: `a02d33c3-e82e-4df7-be1f-c01a943ad55e` (string, required) - Id of Content Playlist Category
+
++ Request (application/json)
+
+        {
+            "title": "Tutorial Node JS"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been updated"
+            },
+            "result": {
+                "id": "a02d33c3-e82e-4df7-be1f-c01a943ad55e"
+            }
+        }
+        
+### Delete Data by ID [POST /content/playlists/category/delete/{id}]
+
++ Parameter
+    + id: `a02d33c3-e82e-4df7-be1f-c01a943ad55e` (string, required) - Id of Content Playlist Category
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been deleted"
+            }
+        }
+
+
+
+## User [/user]
+Represents User Details. 
+
+---
+**Table Routes:**
+| URL                                      | Method | INFO                    |
+| ---------------------------------------- | ------ | ----------------------- |
+| `user`                                   | GET    | Get All Data            |
+| `user/store`                             | POST   | Save Data               |
+| `user/{id}`                              | GET    | Get Data by ID          |
+| `user/search`                            | POST   | Search Data Query       |
+| `user/update/{id}`                       | POST   | Update Data by ID       |
+| `user/delete/{id}`                       | POST   | Delete Data by ID       |
+
+---
+**Requests Tables Parameters:**
+| Parameter       | type   | Status   | Description                     |
+| --------------- | ------ | -------- | ------------------------------- |
+| `name`          | string | required | name of user                    |
+| `email`         | string | required | email of user                   |
+| `first_name`    | string | required | first name of user              |
+| `last_name`     | string | required | last name of user               |
+| `birth_date`    | string | required | birth date of user              |
+| `gender`        | string | required | gender of user (male/female)    |
+| `photo_profile` | string | optional | path of photo profile from user |
+| `about`         | string | optional | about of user                   |
+| `website_link`  | string | optional | website link of user            |
+| `facebook_link` | string | optional | facebook link of user           |
+| `twitter_link`  | string | optional | twitter link of user            |
+| `following`     | json   | optional | Json Object of `following`      |
+| `follower`      | json   | optional | Json Object of `follower`       |
+| `like_video`    | json   | optional | Json Object of `like_video`     |
+| `dislike_video` | json   | optional | Json Object of `dislike_video`  |
+| `saved_video`   | json   | optional | Json Object of `saved_video`    |
+| `history_video` | json   | optional | Json Object of `history_video`  |
+| `playlists`     | json   | optional | Json Object of `playlists`      |
+
+---
+**Following Table Parameters:**
+| Parameter           | type   | Status   | Description               |
+| ------------------- | ------ | -------- | ------------------------- |
+| `id`                | string | required | UUIDv4 ID                 |
+| `following_user_id` | string | required | User ID of Following User |
+| `created_at`        | date   | required | Date of Data Creation     |
+| `updated_at`        | date   | required | Date of Data Updating     |
+
+**Follower Table Parameters:**
+| Parameter          | type   | Status   | Description              |
+| ------------------ | ------ | -------- | ------------------------ |
+| `id`               | string | required | UUIDv4 ID                |
+| `follower_user_id` | string | required | User ID of Follower User |
+| `created_at`       | date   | required | Date of Data Creation    |
+| `updated_at`       | date   | required | Date of Data Updating    |
+
+**Like_video Table Parameters:**
+| Parameter    | type   | Status   | Description           |
+| ------------ | ------ | -------- | --------------------- |
+| `id`         | string | required | UUIDv4 ID             |
+| `video_id`   | string | required | ID of Metadata        |
+| `created_at` | date   | required | Date of Data Creation |
+| `updated_at` | date   | required | Date of Data Updating |
+
+**Dislike_video Table Parameters:**
+| Parameter    | type   | Status   | Description           |
+| ------------ | ------ | -------- | --------------------- |
+| `id`         | string | required | UUIDv4 ID             |
+| `user_id`    | string | required | User ID               |
+| `video_id`   | string | required | ID of Metadata        |
+| `created_at` | date   | required | Date of Data Creation |
+| `updated_at` | date   | required | Date of Data Updating |
+
+**Saved_video Table Parameters:**
+| Parameter    | type   | Status   | Description           |
+| ------------ | ------ | -------- | --------------------- |
+| `id`         | string | required | UUIDv4 ID             |
+| `video_id`   | string | required | ID of Metadata        |
+| `created_at` | date   | required | Date of Data Creation |
+| `updated_at` | date   | required | Date of Data Updating |
+
+**History_video Table Parameters:**
+| Parameter    | type   | Status   | Description              |
+| ------------ | ------ | -------- | ------------------------ |
+| `id`         | string | required | UUIDv4 ID                |
+| `video_id`   | string | required | ID of Metadata           |
+| `last_watch` | string | required | Time of Last Watch Video |
+| `created_at` | date   | required | Date of Data Creation    |
+| `updated_at` | date   | required | Date of Data Updating    |
+
+**Playlists Table Parameters:**
+| Parameter             | type   | Status   | Description                        |
+| --------------------- | ------ | -------- | ---------------------------------- |
+| `id`                  | string | required | UUIDv4 ID                          |
+| `playlistcategory_id` | string | required | ID From content playlists category |
+| `metadata_id`         | string | required | ID From content metadata           |
+| `order_list`          | int    | Optional | Order Playlist                     |
+| `last_watch`          | int    | Optional | Remember Last Watch `in second`    |
+| `created_at`          | date   | required | Date of Data Creation              |
+| `updated_at`          | date   | required | Date of Data Updating              |
+
+
+### Get All Data [GET /user]
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "index list query has been performed, data has been found",
+                "total": 1
+            },
+            "result": [
+                {
+                    "website_link": "https://example.com",
+                    "follower": null,
+                    "gender": "male",
+                    "photo_profile": "https://aws.s3.example/here/pojokproject.png",
+                    "twitter_link": "https://twitter.com/example",
+                    "birth_date": "2019-01-01",
+                    "about": "optional about",
+                    "facebook_link": "https://facebook.com/example",
+                    "playlists": null,
+                    "last_name": "Project",
+                    "created_at": "2019-08-24T22:43:47+07:00",
+                    "saved_video": null,
+                    "updated_at": "2019-08-24T22:50:12+07:00",
+                    "dislike_video": null,
+                    "following": null,
+                    "name": "Pojok Project",
+                    "id": "80438768-ef0c-4a07-8c32-8807cec3d930",
+                    "linkedin_link": "https://www.linkedin.com/example",
+                    "history_video": [
+                        {
+                            "created_at": "2019-08-24T22:48:16+07:00",
+                            "id": "becdbbe4-5a0c-4aa5-86b0-52f661d56816",
+                            "last_watch": 64,
+                            "updated_at": "2019-08-24T22:48:16+07:00",
+                            "video_id": "56b140a1-16a7-4fbb-b852-7365fbff7112"
+                        }
+                    ],
+                    "first_name": "Pojok",
+                    "email": "pojokan@gmail.com",
+                    "like_video": null
+                }
+            ]
+        }
+
+### Save Data [POST /user/store]
+
++ Request (application/json)
+
+        {
+            "name": "Pojok Project",
+            "email": "iniemailpojok@gmail.com",
+            "first_name": "Pojok",
+            "last_name": "Project",
+            "birth_date": "2019-01-01",
+            "gender": "male",
+            "photo_profile": "https://aws.s3.example/here/pojokproject.png",
+            "about": "optional about",
+            "website_link": "https://example.com",
+            "facebook_link": "https://facebook.com/example",
+            "twitter_link": "https://twitter.com/example",
+            "linkedin_link": "https://www.linkedin.com/example"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been saved"
+            },
+            "result": {
+                "id": "80438768-ef0c-4a07-8c32-8807cec3d930"
+            }
+        }
+        
+### Get Data by ID [GET /user/{id}]
+
++ Parameter
+    + id: `80438768-ef0c-4a07-8c32-8807cec3d930` (string, required) - Id of User
+
++ Response 200 (application/json)
+
+        {
+            "website_link": "https://example.com",
+            "follower": null,
+            "gender": "male",
+            "photo_profile": "https://aws.s3.example/here/pojokproject.png",
+            "twitter_link": "https://twitter.com/example",
+            "birth_date": "2019-01-01",
+            "about": "optional about",
+            "facebook_link": "https://facebook.com/example",
+            "playlists": null,
+            "last_name": "Project",
+            "created_at": "2019-08-24T22:43:47+07:00",
+            "saved_video": null,
+            "updated_at": "2019-08-24T22:43:47+07:00",
+            "dislike_video": null,
+            "following": null,
+            "name": "Pojok Project",
+            "id": "80438768-ef0c-4a07-8c32-8807cec3d930",
+            "linkedin_link": "https://www.linkedin.com/example",
+            "history_video": null,
+            "first_name": "Pojok",
+            "email": "iniemailpojok@gmail.com",
+            "like_video": null
+        }
+
+### Search Data Query [POST /user/search]
+
+**Requests Tables:**
+| Parameter | type   | Description                                |
+| --------- | ------ | ------------------------------------------ |
+| `query`   | string | Based on Table Name and Using `URL Encode` |
+
+**Important:**
+* Use `Search Query Builder`
+
++ Request (application/json)
+
+        {
+        "query": "%22name%3DPojok Project%22"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "search query has been performed, data has been found",
+                "total": 1
+            },
+            "result": [
+                {
+                    "website_link": "https://example.com",
+                    "follower": null,
+                    "gender": "male",
+                    "photo_profile": "https://aws.s3.example/here/pojokproject.png",
+                    "twitter_link": "https://twitter.com/example",
+                    "birth_date": "2019-01-01",
+                    "about": "optional about",
+                    "facebook_link": "https://facebook.com/example",
+                    "playlists": null,
+                    "last_name": "Project",
+                    "created_at": "2019-08-24T22:43:47+07:00",
+                    "saved_video": null,
+                    "updated_at": "2019-08-24T22:43:47+07:00",
+                    "dislike_video": null,
+                    "following": null,
+                    "name": "Pojok Project",
+                    "id": "80438768-ef0c-4a07-8c32-8807cec3d930",
+                    "linkedin_link": "https://www.linkedin.com/example",
+                    "history_video": null,
+                    "first_name": "Pojok",
+                    "email": "iniemailpojok@gmail.com",
+                    "like_video": null
+                }
+            ]
+        }
+        
+### Update Data by ID [POST /user/update/{id}]
+
++ Parameter
+    + id: `80438768-ef0c-4a07-8c32-8807cec3d930` (string, required) - Id of User
+
++ Request (application/json)
+
+        {
+        "email": "pojokan@gmail.com",
+        "history_video": [
+                {
+                    "id": "becdbbe4-5a0c-4aa5-86b0-52f661d56816",
+                    "video_id": "56b140a1-16a7-4fbb-b852-7365fbff7112",
+                    "last_watch": 64,
+                    "created_at": "2019-08-24T22:48:16+07:00",
+                    "updated_at": "2019-08-24T22:48:16+07:00"
+                }
+            ]
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been updated"
+            },
+            "result": {
+                "id": "80438768-ef0c-4a07-8c32-8807cec3d930"
+            }
+        }
+        
+### Delete Data by ID [POST /user/delete/{id}]
+
++ Parameter
+    + id: `80438768-ef0c-4a07-8c32-8807cec3d930` (string, required) - Id of User
+
++ Response 200 (application/json)
+
+        {
+            "status": {
+                "code": "200",
+                "message": "data has been deleted"
+            },
+            "result": {
+                "id": "80438768-ef0c-4a07-8c32-8807cec3d930"
+            }
+        }
